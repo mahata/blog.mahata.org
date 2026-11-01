@@ -1,0 +1,44 @@
+---
+layout: base.njk
+pagination:
+  data: collections.posts
+  size: 10
+  alias: pagePosts
+  generatePageOnEmptyData: true
+permalink: "{{ (pagination.pageNumber + 1) | pageHref }}index.html"
+---
+{%- set currentPage = pagination.pageNumber + 1 -%}
+{%- set totalPages = pagination.pages.length -%}
+{% if pagePosts.length == 0 %}
+<p>No posts found.</p>
+{% else %}
+<ul class="postList" aria-label="Posts">
+{%- for post in pagePosts %}
+  <li class="postListItem">
+    <a href="/posts/{{ post.data.slug }}/" class="postLink">{{ post.data.title }}</a>
+    <time class="postDate" datetime="{{ post.date | isoDate }}">{{ post.date | displayDate }}</time>
+  </li>
+{%- endfor %}
+</ul>
+{% endif %}
+{% if totalPages > 1 %}
+<nav class="pagination" aria-label="Pagination Navigation">
+  <ul class="paginationList">
+  {%- if currentPage > 1 %}
+    <li class="paginationItem"><a href="{{ (currentPage - 1) | pageHref }}" class="paginationLink paginationPrev">← Previous</a></li>
+  {%- endif %}
+  {%- for pageNumber in range(1, totalPages + 1) %}
+    <li class="paginationItem">
+    {%- if pageNumber == currentPage -%}
+      <span class="paginationLink paginationCurrent" aria-current="page">{{ pageNumber }}</span>
+    {%- else -%}
+      <a href="{{ pageNumber | pageHref }}" class="paginationLink">{{ pageNumber }}</a>
+    {%- endif -%}
+    </li>
+  {%- endfor %}
+  {%- if currentPage < totalPages %}
+    <li class="paginationItem"><a href="{{ (currentPage + 1) | pageHref }}" class="paginationLink paginationNext">Next →</a></li>
+  {%- endif %}
+  </ul>
+</nav>
+{% endif %}

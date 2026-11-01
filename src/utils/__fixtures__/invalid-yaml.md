@@ -1,6 +1,0 @@
----
-: invalid
-:: double colons
----
-
-Content
