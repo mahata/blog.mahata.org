@@ -9,11 +9,7 @@
 
   "customizations": {
     "vscode": {
-      "extensions": ["ms-playwright.playwright", "vitest.explorer", "GitHub.copilot"],
-      "settings": {
-        "editor.formatOnSave": true,
-        "typescript.preferences.importModuleSpecifier": "relative"
-      }
+      "extensions": ["GitHub.copilot"]
     }
   }
 }
