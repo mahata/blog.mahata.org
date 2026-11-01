@@ -1,5 +1,5 @@
 {
-  "name": "mahata-pages.github.io Project",
+  "name": "blog.mahata.org Project",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:24-bullseye",
 
   "features": {
