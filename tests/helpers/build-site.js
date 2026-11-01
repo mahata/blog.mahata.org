@@ -43,7 +43,7 @@ export function numberedPosts(count) {
   );
 }
 
-export function buildSite({ posts = {}, useRepositoryPosts = false } = {}) {
+export function buildSite({ posts = {}, useRepositoryPosts = false, siteUrl } = {}) {
   const projectDirectory = mkdtempSync(path.join(tmpdir(), "blog-build-"));
   for (const entry of projectEntriesNeededForBuild) {
     cpSync(path.join(repositoryRoot, entry), path.join(projectDirectory, entry), {
@@ -60,12 +60,13 @@ export function buildSite({ posts = {}, useRepositoryPosts = false } = {}) {
     writeFileSync(path.join(projectDirectory, "posts", fileName), contents);
   }
 
-  const environmentWithoutSiteUrl = { ...process.env };
-  delete environmentWithoutSiteUrl.SITE_URL;
+  const buildEnvironment = { ...process.env };
+  delete buildEnvironment.SITE_URL;
+  if (siteUrl !== undefined) buildEnvironment.SITE_URL = siteUrl;
   const result = spawnSync(process.execPath, [eleventyCli, "--quiet"], {
     cwd: projectDirectory,
     encoding: "utf8",
-    env: environmentWithoutSiteUrl,
+    env: buildEnvironment,
   });
   const outputDirectory = path.join(projectDirectory, "dist");
 

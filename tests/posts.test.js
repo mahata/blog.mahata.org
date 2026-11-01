@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
-  escapeXml,
   formatDisplayDate,
   formatIsoDate,
   formatRfc822Date,
@@ -56,15 +55,6 @@ describe("date formatting", () => {
 
   it("formats RFC 822 dates for RSS", () => {
     assert.equal(formatRfc822Date(midnightUtc), "Mon, 13 Feb 2023 00:00:00 GMT");
-  });
-});
-
-describe("escapeXml", () => {
-  it("escapes all XML special characters", () => {
-    assert.equal(
-      escapeXml(`<a href="x">Tom & Jerry's</a>`),
-      "&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&apos;s&lt;/a&gt;",
-    );
   });
 });
 

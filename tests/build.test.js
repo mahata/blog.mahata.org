@@ -114,6 +114,27 @@ describe("site with a single post", () => {
   });
 });
 
+describe("site URL with XML special characters", () => {
+  const context = useBuild({
+    siteUrl: "https://example.com/a&b",
+    posts: { "2024-01-02-hello.md": post({ title: "Hello", date: "2024-01-02" }) },
+  });
+
+  it("escapes the URL exactly once in the RSS feed", () => {
+    const feed = context.site.read("rss.xml");
+    assert.match(feed, /<link>https:\/\/example\.com\/a&amp;b<\/link>/);
+    assert.match(feed, /<link>https:\/\/example\.com\/a&amp;b\/posts\/2024-01-02-hello<\/link>/);
+    assert.doesNotMatch(feed, /&amp;amp;/);
+  });
+
+  it("escapes the URL exactly once in the sitemap", () => {
+    const sitemap = context.site.read("sitemap.xml");
+    assert.match(sitemap, /<loc>https:\/\/example\.com\/a&amp;b<\/loc>/);
+    assert.match(sitemap, /<loc>https:\/\/example\.com\/a&amp;b\/posts\/2024-01-02-hello<\/loc>/);
+    assert.doesNotMatch(sitemap, /&amp;amp;/);
+  });
+});
+
 describe("site with ten posts", () => {
   const context = useBuild({ posts: numberedPosts(10) });
 

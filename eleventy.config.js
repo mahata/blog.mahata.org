@@ -1,5 +1,4 @@
 import {
-  escapeXml,
   formatDisplayDate,
   formatIsoDate,
   formatRfc822Date,
@@ -27,7 +26,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter("displayDate", formatDisplayDate);
   eleventyConfig.addFilter("isoDate", formatIsoDate);
   eleventyConfig.addFilter("rfc822Date", formatRfc822Date);
-  eleventyConfig.addFilter("xml", escapeXml);
   eleventyConfig.addFilter("cdata", wrapCdata);
   eleventyConfig.addFilter("pageHref", pageHref);
 
