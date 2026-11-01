@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ site.title }}</title>
+    <link rel="icon" type="image/webp" href="/logo.webp">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="alternate" type="application/rss+xml" title="{{ site.feedTitle }}" href="/rss.xml">
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" aria-label="Go to home">
+        <img src="/logo.webp" alt="Logo" class="logo" width="128" height="128">
+      </a>
+    </header>
+    <main>
+{{ content | safe }}
+    </main>
+  </body>
+</html>

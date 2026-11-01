@@ -2,8 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Lint and CI Tests with Playwright Component Testing"]
+    workflows: ["Test"]
     types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -22,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -36,6 +39,9 @@ jobs:
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
+
+      - name: Test
+        run: pnpm test
 
       - name: Build
         run: pnpm run build

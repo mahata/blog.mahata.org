@@ -9,14 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
-dist-ssr
 *.local
 package-lock.json
-
-# Playwright
-playwright-report
-test-results
-playwright/.cache/*
 
 # Editor directories and files
 .vscode/*

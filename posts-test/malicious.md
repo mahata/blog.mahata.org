@@ -1,5 +1,0 @@
-# Safe Heading
-
-<script>alert("xss")</script>
-
-<img src=x onerror=alert(1)>

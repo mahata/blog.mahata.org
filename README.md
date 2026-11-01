@@ -1,59 +1,44 @@
 # blog.mahata.org — Personal Blog & Pages
 
-A modern full-stack blog application built with React, TypeScript, and Vite. Features markdown-based posts with YAML front matter, automatic RSS feed generation, paginated post listing, and comprehensive testing with Playwright and Vitest.
+A static blog built with [Eleventy](https://www.11ty.dev/) and hosted on GitHub Pages. Posts are Markdown files with YAML front matter. The build outputs plain HTML and CSS with no client-side JavaScript.
 
 ## Features
 
 - **Markdown Blog Posts** — Write posts in Markdown with YAML front matter (title, date)
-- **RSS Feed Generation** — Automatically generates `rss.xml` from all posts
-- **Paginated Listing** — Home page displays 10 most recent posts per page
-- **Individual Post Pages** — Clean rendering of each markdown post with syntax highlighting
-- **Component Testing** — Playwright component tests for UI reliability
-- **Fast Development** — Vite with SWC for instant HMR and fast builds
-- **Type Safe** — Full TypeScript support for confidence in refactoring
-- **Code Quality** — oxlint and oxfmt for linting and formatting
+- **Static Output** — Every page is pre-rendered HTML; no JavaScript is shipped to browsers
+- **Paginated Listing** — The home page lists 10 posts per page at `/`, `/page/2/`, and so on
+- **RSS Feed and Sitemap** — `rss.xml` and `sitemap.xml` are generated at build time
+- **Minimal Dependencies** — `@11ty/eleventy` is the only dependency; tests use Node's built-in `node:test`
 
 ## Project Structure
 
 ```
-├── src/                     # React application source
-│   ├── pages/               # Page components (Home)
-│   ├── routes/              # Route components (Post page, health check)
-│   ├── components/          # Reusable React components
-│   ├── utils/               # Utilities (front matter parsing, post loading)
-│   ├── main.tsx             # React entry point
-│   └── global.css           # Global styles
-├── posts/                   # Blog post markdown files
-│   └── YYYY-MM-DD-*.md      # Named by date; includes YAML front matter
-├── posts-test/              # Test fixtures for post parsing
-├── scripts/
-│   └── generate-rss.ts      # Reads posts and generates RSS feed
-├── public/
-│   ├── rss.xml              # Generated RSS feed
-│   └── images/              # Static images
-├── playwright/              # Component test setup
-├── vite.config.ts           # Vite build configuration
-├── playwright-ct.config.ts  # Playwright component test configuration
-├── tsconfig.json            # TypeScript configuration
-└── package.json             # Dependencies and scripts
-
+├── eleventy.config.js       # Eleventy configuration (collections, filters, passthrough copy)
+├── lib/
+│   └── posts.js             # Pure helpers for slugs, dates, sorting and XML escaping
+├── posts/
+│   ├── posts.11tydata.js    # Layout and permalinks for posts
+│   └── YYYY-MM-DD-*.md      # Blog posts with YAML front matter
+├── src/
+│   ├── _data/site.js        # Site title, URL and feed metadata
+│   ├── _includes/           # Base and post layouts
+│   ├── index.njk            # Paginated post list
+│   ├── rss.njk              # RSS feed (/rss.xml)
+│   ├── sitemap.njk          # Sitemap (/sitemap.xml)
+│   ├── feed.njk             # /feed redirect to /rss.xml
+│   ├── health.njk           # /health check page
+│   ├── 404.njk              # Not-found page
+│   └── styles.css           # Site stylesheet
+├── public/                  # Static assets copied as-is (logo, images)
+├── tests/                   # Unit and build tests (node:test)
+└── package.json
 ```
-
-## Tech Stack
-
-- **Frontend**: React 19, React Router 7, TypeScript 5.9
-- **Build**: Vite with SWC (Fast Refresh)
-- **Markdown Processing**: remark, remark-html, remark-frontmatter, remark-extract-frontmatter
-- **RSS Generation**: feed package
-- **Testing**: Playwright (component & E2E), Vitest
-- **Code Quality**: oxlint, oxfmt
-- **Package Manager**: pnpm
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 22+
+- Node.js 24+
 - pnpm 10+
 
 ### Installation
@@ -68,58 +53,36 @@ pnpm install
 pnpm run dev
 ```
 
-This runs the Vite dev server with HMR at `http://localhost:5173`.
+This starts the Eleventy dev server with live reload at `http://localhost:8080`.
 
-The `dev` script automatically runs `prebuild` before starting, which generates the RSS feed.
+### Writing Posts
 
-### Building Blog Content
-
-To create a new post:
-
-1. Create a markdown file in `posts/` named `YYYY-MM-DD-slug.md`
+1. Create a Markdown file in `posts/` named `YYYY-MM-DD-slug.md`
 2. Add YAML front matter at the top:
    ```yaml
    ---
-   title: Your Post Title
-   date: 2025-01-28
+   title: "Your Post Title"
+   date: "2025-01-28"
    ---
    ```
-3. Write your markdown content
+3. Write your Markdown content
 
-Posts are automatically:
+Posts with both `title` and `date` are:
 
-- Indexed on the home page (paginated, 10 per page)
-- Included in the generated RSS feed
-- Accessible at `/posts/YYYY-MM-DD-slug`
+- Listed on the home page, newest first
+- Included in the RSS feed and sitemap
+- Published at `/posts/YYYY-MM-DD-slug/`
 
-Run `pnpm run prebuild` after adding posts to regenerate the RSS feed.
+Posts missing `title` or `date` are skipped. Invalid YAML or an invalid date fails the build with the file name in the error. Raw HTML in Markdown is rendered as text.
+
+`SITE_URL` overrides the absolute URL used in the RSS feed and sitemap (default: `https://blog.mahata.org`).
 
 ## Available Scripts
 
-- `pnpm run dev` — Start development server with HMR
-- `pnpm run build` — Build for production (TypeScript check + Vite build)
-- `pnpm run prebuild` — Generate RSS feed from posts
-- `pnpm run preview` — Preview production build locally
-- `pnpm run lint` — Run oxlint
-- `pnpm run fmt` — Auto-format with oxfmt
-- `pnpm run test` — Run unit tests with Vitest
-- `pnpm run test:ct` — Run component tests with Playwright
-- `pnpm run test:e2e` — Run E2E tests with Playwright
+- `pnpm run dev` — Start the Eleventy dev server
+- `pnpm run build` — Build the site into `dist/`
+- `pnpm test` — Run unit and build tests with `node:test`
 
-## Testing
+## Deployment
 
-### Component Tests
-
-Located in `src/**/*.ct.spec.tsx`. Run with:
-
-```bash
-pnpm run test:ct
-```
-
-### Unit Tests
-
-Located in `src/**/*.spec.ts(x)`. Run with:
-
-```bash
-pnpm run test
-```
+The `Test` workflow runs on every push. When it succeeds on `main`, the `Deploy to GitHub Pages` workflow tests and builds that commit again and publishes `dist/` to GitHub Pages.

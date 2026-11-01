@@ -1,0 +1,25 @@
+---
+permalink: /rss.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>{{ site.feedTitle }}</title>
+        <link>{{ site.url }}</link>
+        <description>{{ site.feedDescription }}</description>
+        <lastBuildDate>{{ site.buildDate | rfc822Date }}</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <language>en</language>
+        <copyright>© {{ site.buildDate.getUTCFullYear() }} mahata.or</copyright>
+{%- for post in collections.posts %}
+        <item>
+            <title>{{ post.data.title | cdata | safe }}</title>
+            <link>{{ site.url }}/posts/{{ post.data.slug }}</link>
+            <guid isPermaLink="false">{{ site.url }}/posts/{{ post.data.slug }}</guid>
+            <pubDate>{{ post.date | rfc822Date }}</pubDate>
+            <description>{{ post.rawInput | trim | cdata | safe }}</description>
+        </item>
+{%- endfor %}
+    </channel>
+</rss>
