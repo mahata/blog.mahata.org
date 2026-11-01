@@ -1,4 +1,4 @@
-# mahata-pages.github.io — Personal Blog & Pages
+# blog.mahata.org — Personal Blog & Pages
 
 A modern full-stack blog application built with React, TypeScript, and Vite. Features markdown-based posts with YAML front matter, automatic RSS feed generation, paginated post listing, and comprehensive testing with Playwright and Vitest.
 
